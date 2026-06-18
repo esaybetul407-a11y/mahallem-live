@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mahallem Canlı İstatistikler</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f7fb;
+}
+
+.container{
+    max-width:1000px;
+    margin:40px auto;
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.card{
+    width:220px;
+    background:white;
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.number{
+    font-size:42px;
+    font-weight:bold;
+    color:#2E7D32;
+}
+
+.title{
+    margin-top:10px;
+    color:#666;
+    font-size:18px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="card">
+<div class="number" id="completedHelp">0</div>
+<div class="title">Tamamlanan Yardım</div>
+</div>
+
+<div class="card">
+<div class="number" id="volunteers">0</div>
+<div class="title">Gönüllü</div>
+</div>
+
+<div class="card">
+<div class="number" id="sharedItems">0</div>
+<div class="title">Eşya Paylaşımı</div>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDs4_rVKTZ88lA8KN11Hp-U0Wwsic6vSiw",
+  authDomain: "mahallem-5b774.firebaseapp.com",
+  projectId: "mahallem-5b774",
+  storageBucket: "mahallem-5b774.firebasestorage.app",
+  messagingSenderId: "209961116023",
+  appId: "1:209961116023:web:f2e96b867827502e3e4172"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+function animateValue(id, end){
+
+    const element=document.getElementById(id);
+    const start=parseInt(element.innerText)||0;
+
+    let current=start;
+
+    const increment=(end-start)/30;
+
+    const timer=setInterval(()=>{
+
+        current+=increment;
+
+        if(
+            (increment>0 && current>=end) ||
+            (increment<0 && current<=end)
+        ){
+            current=end;
+            clearInterval(timer);
+        }
+
+        element.innerText=Math.round(current);
+
+    },20);
+
+}
+
+const statsRef=doc(db,"statistics","global");
+
+onSnapshot(statsRef,(docSnap)=>{
+
+    if(docSnap.exists()){
+
+        const data=docSnap.data();
+
+        animateValue("completedHelp",data.completedHelp || 0);
+        animateValue("volunteers",data.volunteers || 0);
+        animateValue("sharedItems",data.sharedItems || 0);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

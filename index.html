@@ -114,14 +114,14 @@ const statsRef = doc(db, "stats", "live");
 
 onSnapshot(statsRef, (docSnap) => {
     if (docSnap.exists()) {
-
         const data = docSnap.data();
 
         animateValue("requests", data["Oluşturulan Talepler"] || 0);
         animateValue("completedHelp", data["Tamamlanan Yardımlar"] || 0);
         animateValue("sharedItems", data["Eşya Paylaşımı"] || 0);
         animateValue("lostPets", data["Kayıplar ve Sahiplendirme Başvuruları"] || 0);
-
+    }
+}); // <-- Buradaki parantezleri eklemeyi unutmayın!
     }
 });
 

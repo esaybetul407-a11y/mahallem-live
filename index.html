@@ -1,76 +1,3 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mahallem Canlı İstatistikler</title>
-
-<style>
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f5f7fb;
-}
-
-.container{
-    max-width:1100px;
-    margin:40px auto;
-    display:flex;
-    gap:20px;
-    justify-content:center;
-    flex-wrap:wrap;
-}
-
-.card{
-    width:220px;
-    background:white;
-    border-radius:18px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
-
-.number{
-    font-size:42px;
-    font-weight:bold;
-    color:#2E7D32;
-}
-
-.title{
-    margin-top:10px;
-    color:#666;
-    font-size:18px;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="card">
-        <div class="number" id="requests">0</div>
-        <div class="title">Oluşturulan Talepler</div>
-    </div>
-
-    <div class="card">
-        <div class="number" id="completedHelp">0</div>
-        <div class="title">Tamamlanan Yardımlar</div>
-    </div>
-
-    <div class="card">
-        <div class="number" id="sharedItems">0</div>
-        <div class="title">Eşya Paylaşımı</div>
-    </div>
-
-    <div class="card">
-        <div class="number" id="lostPets">0</div>
-        <div class="title">Kayıplar ve Sahiplendirme Başvuruları</div>
-    </div>
-
-</div>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -90,6 +17,7 @@ const db = getFirestore(app);
 
 function animateValue(id, end){
     const element = document.getElementById(id);
+    if (!element) return; // Hata almamak için ek kontrol
     const start = parseInt(element.innerText) || 0;
 
     let current = start;
@@ -110,15 +38,19 @@ function animateValue(id, end){
     }, 20);
 }
 
-const statsRef = doc(db, "stats", "live");
+// Firebase'deki koleksiyon ve belge yolu ile eşleştirildi
+const statsRef = doc(db, "istatistikler", "küresel");
 
 onSnapshot(statsRef, (docSnap) => {
     if (docSnap.exists()) {
         const data = docSnap.data();
 
-        animateValue("requests", data["Oluşturulan Talepler"] || 0);
+        // Firebase'deki alan isimleriyle birebir eşleştirildi
+        animateValue("requests", data["Uygulanan Talepler"] || 0);
         animateValue("completedHelp", data["Tamamlanan Yardımlar"] || 0);
-        animateValue("sharedItems", data["Eşya Paylaşımı"] || 0);
+        animateValue("sharedItems", data["paylaşılan öğeler"] || 0);
         animateValue("lostPets", data["Kayıplar ve Sahiplendirme Başvuruları"] || 0);
     }
 });
+
+</script>

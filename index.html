@@ -32,32 +32,27 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
     const statsRef = doc(db, "istatistikler", "global");
 
-    window.animateValue = function(id, val) {
-        document.getElementById(id).innerText = val;
+    // SADECE sayfa tamamen hazır olduğunda veriyi dinle
+    window.onload = () => {
+        onSnapshot(statsRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                
+                // Güvenli yazdırma
+                const ids = ["requests", "completedHelp", "sharedItems", "lostPets"];
+                const keys = ["Oluşturulan Talepler", "Tamamlanan Yardımlar", "Eşya Paylaşımı", "Kayıplar ve Sahiplendirme Başvuruları"];
+                
+                ids.forEach((id, index) => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.innerText = data[keys[index]] || 0;
+                    }
+                });
+            }
+        });
     };
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    onSnapshot(statsRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-                        const elRequests = document.getElementById("requests");
-            const elCompleted = document.getElementById("completedHelp");
-            const elShared = document.getElementById("sharedItems");
-            const elLost = document.getElementById("lostPets");
-
-            if(elRequests) elRequests.innerText = data["Oluşturulan Talepler"] || 0;
-            if(elCompleted) elCompleted.innerText = data["Tamamlanan Yardımlar"] || 0;
-            if(elShared) elShared.innerText = data["Eşya Paylaşımı"] || 0;
-            if(elLost) elLost.innerText = data["Kayıplar ve Sahiplendirme Başvuruları"] || 0;
-            
-            console.log("Veri güncellendi!");
-        }
-    });
-});
 </script>
 </body>
 </html>

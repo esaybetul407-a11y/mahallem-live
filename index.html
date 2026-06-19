@@ -6,7 +6,7 @@
     <style>
         .container { display: flex; gap: 20px; justify-content: center; }
         .card { padding: 30px; border: 1px solid #ccc; text-align: center; }
-        .number { font-size: 40px; font-weight: bold; color: green; 
+        .number { font-size: 40px; font-weight: bold; color: green; }
     </style>
 </head>
 <body>
@@ -16,9 +16,11 @@
     <div class="card"><div class="number" id="sharedItems">0</div><div>Eşya Paylaşımı</div></div>
     <div class="card"><div class="number" id="lostPets">0</div><div>Kayıplar ve Sahiplendirme Başvuruları</div></div>
 </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
     const firebaseConfig = {
         apiKey: "AIzaSyDs4_rVKTZ88lA8KN11Hp-U0Wwsic6vSiw",
         authDomain: "mahallem-5b774.firebaseapp.com",
@@ -27,20 +29,26 @@
         messagingSenderId: "209961116023",
         appId: "1:209961116023:web:f2e96b867827502e3e4172"
     };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    // Veritabanı Yolu: 'istatistikler' koleksiyonu -> 'global' belgesi
+
     const statsRef = doc(db, "istatistikler", "global");
+
+    // Sayıların artış efekti için fonksiyon
+    window.animateValue = function(id, val) {
+        document.getElementById(id).innerText = val;
+    };
+
     onSnapshot(statsRef, (docSnap) => {
-    if (docSnap.exists()) {
-        const data = docSnap.data();
-        
-        // Buradaki anahtarlar Firebase'deki alan isimleri ile %100 aynı olmalı
-        animateValue("requests", data["Oluşturulan Talepler"] || 0);
-        animateValue("completedHelp", data["Tamamlanan Yardımlar"] || 0);
-        animateValue("sharedItems", data["Eşya Paylaşımı"] || 0);
-        animateValue("lostPets", data["Kayıplar ve Sahiplendirme Başvuruları"] || 0);
-    }
-});
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            animateValue("requests", data["Oluşturulan Talepler"] || 0);
+            animateValue("completedHelp", data["Tamamlanan Yardımlar"] || 0);
+            animateValue("sharedItems", data["Eşya Paylaşımı"] || 0);
+            animateValue("lostPets", data["Kayıplar ve Sahiplendirme Başvuruları"] || 0);
+        }
+    });
+</script>
 </body>
 </html>

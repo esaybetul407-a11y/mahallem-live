@@ -1,34 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahallem İstatistikleri</title>
+    <style>
+        .container { display: flex; gap: 20px; justify-content: center; }
+        .card { padding: 30px; border: 1px solid #ccc; text-align: center; }
+        .number { font-size: 40px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card"><div class="number" id="requests">0</div><div>Oluşturulan Talepler</div></div>
+    <div class="card"><div class="number" id="completedHelp">0</div><div>Tamamlanan Yardımlar</div></div>
+    <div class="card"><div class="number" id="sharedItems">0</div><div>Eşya Paylaşımı</div></div>
+    <div class="card"><div class="number" id="lostPets">0</div><div>Kayıplar ve Sahiplendirme Başvuruları</div></div>
+</div>
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDs4_rVKTZ88lA8KN11Hp-U0Wwsic6vSiw",
-  authDomain: "mahallem-5b774.firebaseapp.com",
-  projectId: "mahallem-5b774",
-  storageBucket: "mahallem-5b774.firebasestorage.app",
-  messagingSenderId: "209961116023",
-  appId: "1:209961116023:web:f2e96b867827502e3e4172"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDs4_rVKTZ88lA8KN11Hp-U0Wwsic6vSiw",
+        authDomain: "mahallem-5b774.firebaseapp.com",
+        projectId: "mahallem-5b774",
+        storageBucket: "mahallem-5b774.firebasestorage.app",
+        messagingSenderId: "209961116023",
+        appId: "1:209961116023:web:f2e96b867827502e3e4172"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-function animateValue(id, end){
-    const element = document.getElementById(id);
-    if (!element) return;
-    element.innerText = end; // Animasyonu basitleştirdik, direkt değeri yazsın
-}
+    // Veritabanı Yolu: 'istatistikler' koleksiyonu -> 'global' belgesi
+    const statsRef = doc(db, "istatistikler", "global");
 
-// Koleksiyon yolu: "istatistikler" -> "küresel"
-const statsRef = doc(db, "istatistikler", "küresel");
-
-onSnapshot(statsRef, (docSnap) => {
-    if (docSnap.exists()) {
-        const data = docSnap.data();
-        animateValue("requests", data["Oluşturulan Talepler"] || 0);
-        animateValue("completedHelp", data["Tamamlanan Yardımlar"] || 0);
-        animateValue("sharedItems", data["Eşya Paylaşımı"] || 0);
-        animateValue("lostPets", data["Kayıplar ve Sahiplendirme Başvuruları"] || 0);
-    }
-});
+    onSnapshot(statsRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            // Firebase alan isimleri ile birebir eşleşme
+            document.getElementById("requests").innerText = data["Oluşturulan Talepler"] || 0;
+            document.getElementById("completedHelp").innerText = data["Tamamlanan Yardımlar"] || 0;
+            document.getElementById("sharedItems").innerText = data["Eşya Paylaşımı"] || 0;
+            document.getElementById("lostPets").innerText = data["Kayıplar ve Sahiplendirme Başvuruları"] || 0;
+        }
+    });
+</script>
+</body>
+</html>

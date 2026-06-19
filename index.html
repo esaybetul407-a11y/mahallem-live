@@ -56,3 +56,16 @@
 </script>
 </body>
 </html>
+onSnapshot(statsRef, (docSnap) => {
+    console.log("Belge bulundu mu:", docSnap.exists());
+
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log(data);
+
+        document.getElementById("requests").innerText = data["Oluşturulan Talepler"] || 0;
+        document.getElementById("completedHelp").innerText = data["Tamamlanan Yardımlar"] || 0;
+        document.getElementById("sharedItems").innerText = data["Eşya Paylaşımı"] || 0;
+        document.getElementById("lostPets").innerText = data["Kayıplar ve Sahiplendirme Başvuruları"] || 0;
+    }
+});
